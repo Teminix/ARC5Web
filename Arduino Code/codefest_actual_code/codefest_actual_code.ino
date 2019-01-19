@@ -63,6 +63,7 @@ void setup() {
 void loop(void){ //there is a void inside of the loop 
     float temp = dht.readTemperature(); //temperature data output
 
+    if(Wifi.status() == WL_CONNECTED){
     
     HTTPClient http;
     http.begin("http://192.168.1.170:8001/");
@@ -70,7 +71,20 @@ void loop(void){ //there is a void inside of the loop
     http.addHeader("Content-Type", "text-plain");
     int httpCode = http.POST(temp); 
     
-    
+    String payload = http.getString();
+    Serial.println(httpCode);   
+    Serial.println(payload);
+
+    http.end();
+
+    }
+
+    else{
+      Serial.print("Error in Wifi connection");
+    }
+
+    delay(5000);
+
 
 /*
     int LDRvalue = analogRead(LDRpin);
@@ -93,8 +107,5 @@ void loop(void){ //there is a void inside of the loop
       DHTontime++; 
     }
 
-    */
-
-    
-    
+    */  
 }
