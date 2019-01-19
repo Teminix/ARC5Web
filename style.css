@@ -1,0 +1,46 @@
+body {
+  background-image: url(https://www.fcsolar.com.au/wp-content/uploads/2017/10/what-is-renewable-energy.jpg);
+
+}
+
+.navbar {
+  text-align: left;
+  color: black;
+  display: block;
+  background: blue;
+  text-decoration: none;
+}
+
+.navbar a {
+  text-align: left;
+  color: black;
+  text-decoration: none;
+
+}
+.item {
+  display: inline-block;
+}
+.item a {
+  padding: 20px;
+  display: block;
+}
+
+.item a:hover {
+  color: white;
+  background: black;
+  padding: 20px;
+  display: black;
+}
+input {
+  color: white;
+  background: black;
+
+
+  color: black;
+  background: white;
+}
+
+input:focus {
+  color: black;
+  background: white;
+}
