@@ -24,6 +24,9 @@ String page = "";
 String text = ""; 
 String data = "";
 
+int LDRontime = 0;
+int DHTontime = 0;
+
 
 void setup() {
     dht.begin(); //starts dht sensor
@@ -72,8 +75,11 @@ void loop(void){ //there is a void inside of the loop
       DHTon = !DHTon;
     }
 
-    int LDRontime;
-    
+
+    if (LDRon = true){
+      delay(1000);
+      LDRontime++;
+    }
     
 
 
