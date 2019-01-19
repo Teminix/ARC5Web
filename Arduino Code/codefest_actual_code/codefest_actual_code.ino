@@ -28,11 +28,10 @@ int LDRontime = 0;
 int DHTontime = 0;
 
 
+
 void setup() {
     dht.begin(); //starts dht sensor
-
-       
-   
+    
        Serial.begin(9600); 
        delay(10);
                
@@ -84,13 +83,6 @@ void loop(void){ //there is a void inside of the loop
       DHTontime++; 
     }
 
-    if (DHTon == false){
-      
-    }
     
-      //data = LDRvalue
-
     
-  
-
 }
