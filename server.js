@@ -1,25 +1,32 @@
 const l = console.log;
 const colors = require("colors")
 const mongodb = require("mongodb");
-const MongoClient = mongodb.MongoClient;
 const express = require("express");
 const child_process = require("child_process");
 const app = express();
 const bodyParser = require("body-parser");
 const dir = __dirname
-
-
-
-
-
-const ROOT = "tests/"
-
-
-app.use(bodyParser.urlencoded({extented:false}))
+const fs = require("fs")
+const logger = require('./core/logger')
+const ROOT = "ground/";
+const session = require("express-session");
+const MongoClient = mongodb.MongoClient;
+app.use(bodyParser.urlencoded({extended:false}))
+app.use(logger);
+app.use(session({
+  secret:"Some secret",
+  resave:true,
+  saveUninitialized:true
+}))
 app.use(bodyParser.json());
 app.use(function(req,res,next){
-  res.giveFile = function(path,root=""){
-    res.sendFile(dir+"/"+root+path)
+  res.giveFile = function(path){
+    let finalpath = dir+"/"+path
+    if (fs.existsSync(finalpath)) {
+      res.sendFile(finalpath)
+    } else {
+      res.sendFile(dir+"/ground/404.html")
+    }
   }
   next()
 });
@@ -29,13 +36,108 @@ const globals = {
   mongoPort:8000
 };
 app.get("/",(req,res) => {
-  // res.send("hmmmMmmMmMMMMMmmmmmmm")
+  res.send("Hello")
 })
-app.get("/*(.js|.css|.woff|.jpeg|.ttf|.otf)",(req,res) => {
-  res.giveFile(path,ROOT);
+app.get("/login",(req,res) => {
+  res.giveFile("tests/login.html")
+})
+app.get("/*(.jpg|.js|.css|.woff|.jpeg|.ttf|.otf)",(req,res) => {
+  res.giveFile(ROOT+req.path);
+  // l(dir+"/tests/"+req.path)
+})
+app.get('/test',(req,res) => {
+  res.sendFile("/Users/Apple/Documents/My Work/Code learning center/Github tests/test1/ARC5Web/tests/flamingo.jpg")
+})
+app.get("/test/login",(req,res) => {
+  if (req.session.usr != undefined) {
+    redirect("/test/session")
+  } else {
+    res.giveFile("tests/login.html")
+  }
+  res.giveFile("tests/login.html")
+})
+app.post("/test/login",(req,res) => {
+  let {usr,password} = req.body
+  if (usr == undefined || password == undefined) {
+    res.status(400).send("Invalid data format given")
+  } else {
+    (async function(){
+      let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
+      let collection = client.db("codefest").collection("users");
+      if (collection.countDocuments({username:usr,password:password}) == 0) {
+        res.status(400).send("Username and password invalid")
+      } else {
+        req.session.usr = usr;
+        req.session.password = password;
+
+        res.send("Success");
+      }
+    }()).catch(err=>{
+      res.status(500).send("Internal server error");
+      l(err)
+    })
+  }
+
+})
+app.get("/test/signup",(req,res) => {
+  // res.giveFile("tests/login.html");
+  res.giveFile("tests/signup.html")
+})
+app.get("/test/session",(req,res) => {
+  // res.type('json').send(req.session)
+  if (req.session.usr != undefined) {
+    res.type("html").send(`Here are your credentials: username: ${req.session.usr}; Display:${req.session.display}. <a href="logout">Logout here</a>`);
+  } else {
+    res.redirect("/test/login")
+  }
+})
+app.get("/test/logout",(req,res) => {
+  delete req.session.usr;
+  delete req.session.display;
+  res.redirect("/test/signup");
+})
+app.post("/test/signup",(req,res) => {
+  // session testing:
+  let {usr, password, confirm_password} = req.body;
+  if(usr == undefined || password == undefined || confirm_password == undefined){
+    res.status(400).send("Invalid data format used");
+  } else if (usr.trim() == "" || password.trim() == "" || confirm_password.trim() == ""){
+    res.status(400).send("Username, password and confirm password are compulsory")
+  } else if (password != confirm_password) {
+    res.status(400).send("Confirm password and password must be the same");
+  } else {
+    (async function(){
+      let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
+      let collection = client.db("codefest").collection("users");
+      let criteria = {username:usr};
+      if (await collection.countDocuments(criteria) >= 1) {
+        res.status(409).send("Username taken");
+      } else {
+        let doc = {
+          username:usr,
+          password:password
+        }
+        let confirm = await collection.insertOne(doc);
+        req.session.usr = usr;
+        res.send("Success");
+      }
+      client.close()
+    }()).catch(err=>{
+      res.status(500).send("Internal server error");
+      l(err)
+    })
+
+  }
+})
+app.get("/test/signup",(req,res) => {
+  if (req.session.usr != undefined) {
+    res.redirect("/test/session")
+  } else {
+    res.giveFile("tests/signup.html")
+  }
 })
 app.get("/*",(req,res) => {
-  res.giveFile("ground/404.html")
+  res.sendFile(dir+"/ground/404.html");
 })
 app.listen(globals.port,globals.host);
 child_process.exec("ipconfig getifaddr en0",(err,stdout,stderr) => {

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Signup file</title>
+    <style media="screen">
+      input {
+        display:block;
+      }
+      div {
+        margin:10px 100px;
+      }
+    </style>
+    <script src="/js/jquery.js">
+    </script>
+    <script type="text/javascript" src="/js/script.js">
+    </script>
+  </head>
+  <body>
+    <center>
+        <h1>Sign up</h1>
+        <div class="form">
+          <input type="text" name="usr" placeholder="Username">
+          <input type="text" name="password" placeholder="Password">
+          <input type="text" name="confirm_password" placeholder="Confirm password">
+          <span class="prompt"></span><br>
+          <button type="button" id="button">Submit</button><br>
+          <a href="login">Login here</a>
+        </div>
+    </center>
+    <script type="text/javascript">
+      let button = document.getElementById("button");
+      let form = document.getElementsByClassName("form")[0];
+      form.querySelectorAll("[name]").forEach(e=>{
+        e.onkeypress = function(event){
+          if (event.keyCode == 13) {
+            button.onclick()
+          }
+        }
+        // l(e.onkeypress)
+      })
+      let prompt = document.getElementsByClassName("prompt")[0];
+      button.onclick = function(){
+        let dict = getFormData(form);
+        l(dict)
+        $.ajax({
+            url:'/test/signup',
+            type:"POST",
+            data: dict,
+            success:function(data){
+              prompt.style.color = "green";
+              prompt.innerHTML = data;
+              setTimeout(function(){
+                window.location.href = "/test/session";
+              })
+            },
+            error:function(err){
+              prompt.style.color = 'red';
+              prompt.innerHTML = err.responseText;
+            }
+        })
+      }
+    </script>
+  </body>
+</html>

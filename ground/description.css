@@ -5,12 +5,16 @@ body {
 }
 
 .title {
-  background: ;
-  color: white;
+  background: black;
+  color: yellow;
   border-radius: 5px;
   text-align: center;
   margin-top: -10px;
-  padding: 8px;
+  padding: 4px;
+  font-family:bebas;
+  margin-left:300px;
+  font-size: 25px;
+  margin-right:300px;
 }
 
 .des {
