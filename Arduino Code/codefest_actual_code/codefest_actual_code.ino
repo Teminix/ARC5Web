@@ -71,7 +71,7 @@ void loop(void){ //there is a void inside of the loop
     http.begin("http://192.168.1.170:8001/");
 
     http.addHeader("Content-Type", "text-plain");
-    int httpCode = http.POST(temp); 
+    int httpCode = http.POST("nigger"); 
     
     String payload = http.getString();
     Serial.println(httpCode);   
