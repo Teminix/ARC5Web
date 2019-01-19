@@ -11,14 +11,16 @@
 
 DHT dht (dht_dpin, DHTTYPE);
 
+HTTPClient http;
+
 int LDRpin = A0;
 int LDR_Value = 0;
 
 bool LDRon = false; // sets LDR value to off, which is false
 bool DHTon = false; // sets DHT value to off, which is false  
 
-const char *ssid = "oakridge";
-const char *pass = "Oak@Blr123";
+const char *ssid = "codefest";
+const char *pass = "OakCodfest@2019";
 
 String page = "";
 String text = ""; 
@@ -27,12 +29,11 @@ String data = "";
 int LDRontime = 0;
 int DHTontime = 0;
 
+http.begin("http://192.168.1.88:9999/hello");
 
 void setup() {
     dht.begin(); //starts dht sensor
-
-       
-   
+    
        Serial.begin(9600); 
        delay(10);
                
@@ -62,13 +63,17 @@ void setup() {
 }
 
 void loop(void){ //there is a void inside of the loop 
+    float temp = dht.readTemperature(); //temperature data output
 
+
+    
+
+/*
     int LDRvalue = analogRead(LDRpin);
     if (LDRvalue < 100){
       LDRon = !LDRon;
     }
 
-    float temp = dht.readTemperature(); //temperature data output
     
     if (temp > 30){
       DHTon = !DHTon;
@@ -84,13 +89,8 @@ void loop(void){ //there is a void inside of the loop
       DHTontime++; 
     }
 
-    if (DHTon == false){
-      
-    }
-    
-      //data = LDRvalue
+    */
 
     
-  
-
+    
 }
