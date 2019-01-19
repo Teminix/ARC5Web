@@ -11,6 +11,11 @@
 
 DHT dht (dht_dpin, DHTTYPE);
 
+int LDRpin = A0;
+int LDR_Value = 0;
+
+bool LDRon = false; // sets LDR value to off, which is false
+bool DHTon = false; // sets DHT value to off, which is false  
 
 const char *ssid = "oakridge";
 const char *pass = "Oak@Blr123";
