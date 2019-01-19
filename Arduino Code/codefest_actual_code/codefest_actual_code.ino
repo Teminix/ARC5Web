@@ -11,14 +11,15 @@
 
 DHT dht (dht_dpin, DHTTYPE);
 
+
 int LDRpin = A0;
 int LDR_Value = 0;
 
 bool LDRon = false; // sets LDR value to off, which is false
 bool DHTon = false; // sets DHT value to off, which is false  
 
-const char *ssid = "oakridge";
-const char *pass = "Oak@Blr123";
+const char *ssid = "codefest";
+const char *pass = "OakCodfest@2019";
 
 String page = "";
 String text = ""; 
@@ -30,9 +31,7 @@ int DHTontime = 0;
 
 void setup() {
     dht.begin(); //starts dht sensor
-
-       
-   
+    
        Serial.begin(9600); 
        delay(10);
                
@@ -62,13 +61,37 @@ void setup() {
 }
 
 void loop(void){ //there is a void inside of the loop 
+    float temp = dht.readTemperature(); //temperature data output
 
+    if(Wifi.status() == WL_CONNECTED){
+    
+    HTTPClient http;
+    http.begin("http://192.168.1.170:8001/");
+
+    http.addHeader("Content-Type", "text-plain");
+    int httpCode = http.POST(temp); 
+    
+    String payload = http.getString();
+    Serial.println(httpCode);   
+    Serial.println(payload);
+
+    http.end();
+
+    }
+
+    else{
+      Serial.print("Error in Wifi connection");
+    }
+
+    delay(5000);
+
+
+/*
     int LDRvalue = analogRead(LDRpin);
     if (LDRvalue < 100){
       LDRon = !LDRon;
     }
 
-    float temp = dht.readTemperature(); //temperature data output
     
     if (temp > 30){
       DHTon = !DHTon;
@@ -84,13 +107,5 @@ void loop(void){ //there is a void inside of the loop
       DHTontime++; 
     }
 
-    if (DHTon == false){
-      
-    }
-    
-      //data = LDRvalue
-
-    
-  
-
+    */  
 }
