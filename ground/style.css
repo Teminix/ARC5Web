@@ -56,6 +56,8 @@ input:focus {
   font-size:100px;
   color:yellow;
   padding:10px;
+  animation-name: details;
+  animation-duration: 1.5s;
 }
 .subdivision {
   background: black;
@@ -64,6 +66,8 @@ input:focus {
   font-size: 30px;
   font-family:bebas;
   display: inline-block;
+  animation-name: details;
+  animation-duration: 1.5s;
 }
 .gyaf{
   margin-left: 400px;
@@ -107,9 +111,15 @@ button {
   border-radius: 3px;
   font-size: 30px;
   transform:translateX(79px);
-  border: red;
+  border:0;
+  animation-name: details;
+  animation-duration: 1.5s;
 }
 button:hover{
   background:white;
   color: black;
+}
+@keyframes details{
+  from{opacity:0}
+  to{opacity:1}
 }
