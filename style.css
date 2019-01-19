@@ -1,6 +1,6 @@
 body {
   background-image: url(https://www.fcsolar.com.au/wp-content/uploads/2017/10/what-is-renewable-energy.jpg);
-  
+
 }
 
 .navbar {
@@ -34,4 +34,13 @@ body {
 input {
   color: white;
   background: black;
+
+
+  color: black;
+  background: white;
+}
+
+input:focus {
+  color: black;
+  background: white;
 }
