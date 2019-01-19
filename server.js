@@ -6,18 +6,37 @@ const express = require("express");
 const child_process = require("child_process");
 const app = express();
 const bodyParser = require("body-parser");
+const dir = __dirname
+
+
+
+
+
+const ROOT = "tests/"
+
 
 app.use(bodyParser.urlencoded({extented:false}))
 app.use(bodyParser.json());
+app.use(function(req,res,next){
+  res.giveFile = function(path,root=""){
+    res.sendFile(dir+"/"+root+path)
+  }
+  next()
+});
 const globals = {
   host:"0.0.0.0",
   port:8001,
   mongoPort:8000
 };
 app.get("/",(req,res) => {
-  res.send("hmmmmmmmmm")
+  // res.send("hmmmMmmMmMMMMMmmmmmmm")
 })
-app.get("/*(.js|.css|.woff|.ttf|.otf)")
+app.get("/*(.js|.css|.woff|.jpeg|.ttf|.otf)",(req,res) => {
+  res.giveFile(path,ROOT);
+})
+app.get("/*",(req,res) => {
+  res.giveFile("ground/404.html")
+})
 app.listen(globals.port,globals.host);
 child_process.exec("ipconfig getifaddr en0",(err,stdout,stderr) => {
   if (err) {
