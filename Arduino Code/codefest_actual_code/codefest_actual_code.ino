@@ -70,19 +70,23 @@ void loop(void){ //there is a void inside of the loop
 
     float temp = dht.readTemperature(); //temperature data output
     
-
     if (temp > 30){
       DHTon = !DHTon;
     }
 
-
-    if (LDRon = true){
+    if (LDRon == true){
       delay(1000);
       LDRontime++;
     }
     
+    if (DHTon == true){
+      delay(1000);
+      DHTontime++; 
+    }
 
-
+    if (DHTon == false){
+      
+    }
     
       //data = LDRvalue
 
