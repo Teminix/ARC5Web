@@ -1,6 +1,8 @@
 body {
-  background-image: url(https://www.fcsolar.com.au/wp-content/uploads/2017/10/what-is-renewable-energy.jpg);
-
+  background-image: url("https://www.fcsolar.com.au/wp-content/uploads/2017/10/what-is-renewable-energy.jpg");
+  background-size:100%;
+  background-repeat:no-repeat;
+  background-attachment: fixed
 }
 
 .navbar {
@@ -40,14 +42,22 @@ input {
 }
 
 .heading {
-  font-size: 30px;
+  font-size: 100px;
   background: yellow;
   margin: 10px;
   display: inline-block;
+  padding-left: 10px;
+  font-family:"bebas";
+  text-align: center;
 
 }
 .subdivision {
   background: white;
   padding: 30px;
   font-size: 30px;
+  font-family:bebas;
+}
+@font-face {
+    font-family:"bebas";
+    src:url('Fonts/bebas/BebasNeue Bold.otf')
 }
