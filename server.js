@@ -1,23 +1,27 @@
 const l = console.log;
-const colors = require("colors")
+const colors = require("colors");
 const mongodb = require("mongodb");
 const express = require("express");
 const child_process = require("child_process");
 const app = express();
 const bodyParser = require("body-parser");
-const dir = __dirname
-const fs = require("fs")
-const logger = require('./core/logger')
+const dir = __dirname;
+const fs = require("fs");
+const {encrypt,decrypt} = require("./core/crypt.js");
+const logger = require('./core/logger');
 const ROOT = "ground/";
 const session = require("express-session");
 const MongoClient = mongodb.MongoClient;
-app.use(bodyParser.urlencoded({extended:false}))
+const nodemailer = require("nodemailer")
+app.use(bodyParser.urlencoded({extended:false}));
 app.use(logger);
+app.use(bodyParser.text());
 app.use(session({
   secret:"Some secret",
   resave:true,
   saveUninitialized:true
 }))
+
 app.use(bodyParser.json());
 app.use(function(req,res,next){
   res.giveFile = function(path){
@@ -35,18 +39,67 @@ const globals = {
   port:8001,
   mongoPort:8000
 };
+app.post("/",(req,res) => {
+  res.send("Data you sent: "+req.body)
+})
 app.get("/",(req,res) => {
   res.send("Hello")
 })
 app.get("/login",(req,res) => {
   res.giveFile("tests/login.html")
 })
-app.get("/*(.jpg|.js|.css|.woff|.jpeg|.ttf|.otf)",(req,res) => {
+app.get("/*(.jpg|.js|.css|.woff|.jpeg|.ttf|.otf|.html)",(req,res) => {
   res.giveFile(ROOT+req.path);
   // l(dir+"/tests/"+req.path)
 })
 app.get('/test',(req,res) => {
   res.sendFile("/Users/Apple/Documents/My Work/Code learning center/Github tests/test1/ARC5Web/tests/flamingo.jpg")
+})
+
+app.get("/preftemp",(req,res) => {
+  res.send("null for now")
+})
+
+app.get("/test/changeusr",(req,res) => {
+  if (req.session.usr != undefined) {
+    res.redirect("/test/login")
+  } else {
+    let usr = req.session.usr;
+    (async function(){
+
+    }()).catch(err=>{
+      res.status(500).send("")
+      l(err)
+    })
+  }
+})
+app.post("/test/changeusr",(req,res) => {
+})
+app.post("/mail/send",(req,res) => {
+  // res.send(decrypt('43df3c2c36944aa507d1ebc62571f095','god'))
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'kabirdesarkar2016@gmail.com',
+    pass: decrypt('43df3c2c36944aa507d1ebc62571f095','god')
+  }
+});
+
+var mailOptions = {
+  from: 'kabirdesarkar2016@gmail.com',
+  to: 'kabirdesarkar@gmail.com',
+  subject: 'Sending Email using Node.js',
+  text: req.body
+};
+
+transporter.sendMail(mailOptions, function(error, info){
+  if (error) {
+    console.log(error);
+  } else {
+    res.type("text").send("Sent email to kabirdesarkar");
+  }
+});
 })
 app.get("/test/login",(req,res) => {
   if (req.session.usr != undefined) {
@@ -56,6 +109,7 @@ app.get("/test/login",(req,res) => {
   }
   res.giveFile("tests/login.html")
 })
+
 app.post("/test/login",(req,res) => {
   let {usr,password} = req.body
   if (usr == undefined || password == undefined) {
@@ -79,10 +133,9 @@ app.post("/test/login",(req,res) => {
   }
 
 })
-app.get("/test/signup",(req,res) => {
-  // res.giveFile("tests/login.html");
-  res.giveFile("tests/signup.html")
-})
+
+
+///////////////////////////////////////////
 app.get("/test/session",(req,res) => {
   // res.type('json').send(req.session)
   if (req.session.usr != undefined) {
