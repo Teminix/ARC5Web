@@ -11,7 +11,6 @@
 
 DHT dht (dht_dpin, DHTTYPE);
 
-HTTPClient http;
 
 int LDRpin = A0;
 int LDR_Value = 0;
@@ -29,7 +28,6 @@ String data = "";
 int LDRontime = 0;
 int DHTontime = 0;
 
-http.begin("http://192.168.1.88:9999/hello");
 
 void setup() {
     dht.begin(); //starts dht sensor
@@ -65,7 +63,13 @@ void setup() {
 void loop(void){ //there is a void inside of the loop 
     float temp = dht.readTemperature(); //temperature data output
 
+    
+    HTTPClient http;
+    http.begin("http://192.168.1.170:8001/");
 
+    http.addHeader("Content-Type", "text-plain");
+    int httpCode = http.POST(temp); 
+    
     
 
 /*
