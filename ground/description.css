@@ -1,0 +1,35 @@
+body{
+  font-family:arial;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}
+.title{
+  background:;
+  color: white;
+  border-radius:5px;
+  text-align:center;
+  margin-top: -10px;
+  padding: 8px;
+}
+.des{
+  background:white;
+  color:black;
+  background-color:rgba(255,255,255,0.69);
+  border-radius:4px;
+  margin-top:-60px;
+  padding: 6px;
+  font-size: 23px;
+  animation-name:change;
+  animation-duration: 1s;
+  animation-delay: 0.23s;
+
+}
+.container {
+  margin:10px 200px;
+  height: 10px;
+}
+@keyframes change{
+  from{transform:translateX(-1000px)}
+  to{transform:translateX(0px)}
+}
