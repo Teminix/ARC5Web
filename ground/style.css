@@ -26,6 +26,7 @@ body {
 .item a {
   padding: 20px;
   display: block;
+  margin-left: -20px;
 }
 
 .item a:hover {
@@ -40,7 +41,7 @@ input {
   color: white;
   background: black;
   font-size: 30px;
-  margin-left: 100px;
+  margin-left: 17px;
   padding:20px
 }
 input:focus {
@@ -63,7 +64,6 @@ input:focus {
   font-size: 30px;
   font-family:bebas;
   display: inline-block;
-  margin-left:100px;
 }
 .gyaf{
   margin-left: 400px;
@@ -101,4 +101,15 @@ button {
   font-size: 20px;
   cursor: pointer;
   margin-left: 100px;
+  background: black;
+  color:white;
+  transition: background 1s;
+  border-radius: 3px;
+  font-size: 30px;
+  transform:translateX(79px);
+  border: red;
+}
+button:hover{
+  background:white;
+  color: black;
 }
