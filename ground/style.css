@@ -38,3 +38,16 @@ input {
   color: white;
   background: black;
 }
+
+.heading {
+  font-size: 30px;
+  background: yellow;
+  margin: 10px;
+  display: inline-block;
+
+}
+.subdivision {
+  background: white;
+  padding: 30px;
+  font-size: 30px;
+}
