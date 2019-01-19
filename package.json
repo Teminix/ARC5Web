@@ -1,0 +1,30 @@
+{
+  "name": "ARC5Web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Teminix/ARC5Web.git"
+  },
+  "dependencies": {
+    "express": "*",
+    "express-session": "*",
+    "mongodb": "*",
+    "colors": "*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Teminix/ARC5Web/issues"
+  },
+  "homepage": "https://github.com/Teminix/ARC5Web#readme"
+}
