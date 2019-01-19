@@ -9,6 +9,9 @@
 #define DHTTYPE DHT11
 #define dht_dpin 4  //digital pin 4 for data output of the Temperature sensor
 
+DHT dht (dht_dpin, DHTTYPE);
+
+
 const char *ssid = "oakridge";
 const char *pass = "Oak@Blr123";
 
@@ -63,8 +66,16 @@ void loop(void){ //there is a void inside of the loop
     if (temp > 30){
       DHTon = !DHTon;
     }
+
+    int LDRontime;
+    
+    
+
+
     
       //data = LDRvalue
+
+    
   
 
 }
