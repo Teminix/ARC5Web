@@ -11,6 +11,7 @@
 
 DHT dht (dht_dpin, DHTTYPE);
 
+ESP8266WebServer server(80);
 
 int LDRpin = A0;
 int LDR_Value = 0;
@@ -18,8 +19,8 @@ int LDR_Value = 0;
 bool LDRon = false; // sets LDR value to off, which is false
 bool DHTon = false; // sets DHT value to off, which is false  
 
-const char *ssid = "oakridge";
-const char *pass = "Oak@Blr123";
+const char *ssid = "codefest";
+const char *pass = "OakCodefest@2019";
 
 String page = "";
 String text = ""; 
@@ -53,25 +54,39 @@ void setup() {
       Serial.print(WiFi.localIP()); //displays IP address that data is sending to
 
 
-   /*    server.on("/data.txt", [](){
-        text = (String)data;
-        server.send(200, "text/html", text);
-      });
-*/     
+   server.on("/", [](){
+
+    server.send(200, "text/html", "Data you sent: " + server.arg("preferredtemp"));
+   
+   /* text = (String)data;
+   server.send(200, "text/html", text);*/
+ });   
+     
 }
 
 void loop(void){ //there is a void inside of the loop 
+
+    server.print
+    
     float floattemp = dht.readTemperature(); //temperature data output
 
     int temp = round(floattemp);
-    
-    if(WiFi.status() == WL_CONNECTED){
+
+    WiFiClient client = server.available();   // listen for incoming clients
+      if (client) {
+        Serial.print("we've got a nigga");   
+      }
+
+      
+    /*if(WiFi.status() == WL_CONNECTED){
+
+  String url = "http://192.168.1.170:8001/mail/send";
     
     HTTPClient http;
-    http.begin("http://192.168.1.170:8001/");
+    http.begin(url);
 
-    http.addHeader("Content-Type", "application/json");
-    int httpCode = http.POST("nigger"); 
+    http.addHeader("Content-Type", "text/plain");// wkihfilu, preferred temperature reached
+    int httpCode = http.POST("yes"); 
     
     String payload = http.getString();
     Serial.println(httpCode);   
@@ -83,7 +98,7 @@ void loop(void){ //there is a void inside of the loop
 
     else{
       Serial.print("Error in Wifi connection");
-    }
+    }*/
 
     delay(5000);
 
