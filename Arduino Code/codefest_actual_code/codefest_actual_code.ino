@@ -18,8 +18,8 @@ int LDR_Value = 0;
 bool LDRon = false; // sets LDR value to off, which is false
 bool DHTon = false; // sets DHT value to off, which is false  
 
-const char *ssid = "codefest";
-const char *pass = "OakCodfest@2019";
+const char *ssid = "oakridge";
+const char *pass = "Oak@Blr123";
 
 String page = "";
 String text = ""; 
@@ -70,7 +70,7 @@ void loop(void){ //there is a void inside of the loop
     HTTPClient http;
     http.begin("http://192.168.1.170:8001/");
 
-    http.addHeader("Content-Type", "text-plain");
+    http.addHeader("Content-Type", "application/json");
     int httpCode = http.POST("nigger"); 
     
     String payload = http.getString();
