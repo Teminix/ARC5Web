@@ -18,7 +18,40 @@ String data = "";
 
 
 void setup() {
-  
+    dht.begin(); //starts dht sensor
+
+       
+   
+       Serial.begin(9600); 
+       delay(10);
+               
+       Serial.print("Connecting to ");
+       Serial.println(ssid); 
+ 
+       WiFi.begin(ssid, pass); 
+       while (WiFi.status() != WL_CONNECTED) 
+          {
+            delay(500);
+            Serial.print(".");
+          }
+      Serial.println("");
+      Serial.println("WiFi connected to "); 
+      Serial.print(ssid); //notifies connection is successful 
+      
+      Serial.println("");
+      Serial.println("IP address: ");
+      Serial.print(WiFi.localIP()); //displays IP address that data is sending to
+
+
+   /*    server.on("/data.txt", [](){
+        text = (String)data;
+        server.send(200, "text/html", text);
+      });
+*/
+
+
+      
+      
 }
 
 void loop() {
