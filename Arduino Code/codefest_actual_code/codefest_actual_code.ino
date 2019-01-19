@@ -4,6 +4,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+#include <
 
 
 #define DHTTYPE DHT11
@@ -61,9 +62,11 @@ void setup() {
 }
 
 void loop(void){ //there is a void inside of the loop 
-    float temp = dht.readTemperature(); //temperature data output
+    float floattemp = dht.readTemperature(); //temperature data output
 
-    if(Wifi.status() == WL_CONNECTED){
+    int temp = round(floattemp);
+    
+    if(WiFi.status() == WL_CONNECTED){
     
     HTTPClient http;
     http.begin("http://192.168.1.170:8001/");
