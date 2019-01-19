@@ -64,6 +64,7 @@ void loop(void){ //there is a void inside of the loop
 
     float temp = dht.readTemperature(); //temperature data output
 
+    
 
 /*
     int LDRvalue = analogRead(LDRpin);
