@@ -9,12 +9,23 @@
 #define DHTTYPE DHT11
 #define dht_dpin 4  //digital pin 4 for data output of the Temperature sensor
 
+DHT dht (dht_dpin, DHTTYPE);
+
+int LDRpin = A0;
+int LDR_Value = 0;
+
+bool LDRon = false; // sets LDR value to off, which is false
+bool DHTon = false; // sets DHT value to off, which is false  
+
 const char *ssid = "oakridge";
 const char *pass = "Oak@Blr123";
 
 String page = "";
 String text = ""; 
 String data = "";
+
+int LDRontime = 0;
+int DHTontime = 0;
 
 
 void setup() {
@@ -63,8 +74,19 @@ void loop(void){ //there is a void inside of the loop
     if (temp > 30){
       DHTon = !DHTon;
     }
+
+
+    if (LDRon = true){
+      delay(1000);
+      LDRontime++;
+    }
+    
+
+
     
       //data = LDRvalue
+
+    
   
 
 }
