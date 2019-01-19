@@ -62,12 +62,15 @@ void setup() {
 
 void loop(void){ //there is a void inside of the loop 
 
+    float temp = dht.readTemperature(); //temperature data output
+
+
+/*
     int LDRvalue = analogRead(LDRpin);
     if (LDRvalue < 100){
       LDRon = !LDRon;
     }
 
-    float temp = dht.readTemperature(); //temperature data output
     
     if (temp > 30){
       DHTon = !DHTon;
@@ -82,6 +85,8 @@ void loop(void){ //there is a void inside of the loop
       delay(1000);
       DHTontime++; 
     }
+
+    */
 
     
     
