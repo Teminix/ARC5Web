@@ -47,14 +47,24 @@ void setup() {
         text = (String)data;
         server.send(200, "text/html", text);
       });
-*/
-
-
-      
-      
+*/     
 }
 
-void loop() {
+void loop(void){ //there is a void inside of the loop 
 
+    int LDRvalue = analogRead(LDRpin);
+    if (LDRvalue < 100){
+      LDRon = !LDRon;
+    }
+
+    float temp = dht.readTemperature(); //temperature data output
+    
+
+    if (temp > 30){
+      DHTon = !DHTon;
+    }
+    
+      //data = LDRvalue
+  
 
 }
