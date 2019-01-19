@@ -39,10 +39,17 @@ body {
 input {
   color: white;
   background: black;
+  font-size: 30px;
+  margin-left: 100px;
+  padding:20px
 }
-
+input:focus {
+  color: black;
+  background: white;
+  transition: 0.5s;
+}
 .heading {
-  background-color:none;
+  background-color:black;
   display:inline-block;
   font-family:"bebas";
   font-size:100px;
@@ -50,11 +57,21 @@ input {
   padding:10px;
 }
 .subdivision {
-  background: none;
-  color:white;
-  padding: 30px;
+  background: black;
+  color: yellow;
+  padding: 10 px;
   font-size: 30px;
   font-family:bebas;
+  display: inline-block;
+  margin-left:100px;
+}
+.gyaf{
+  margin-left: 400px;
+  Margin-right:400px;
+  margin-top: 200px;
+  Margin-bottom: 200px;
+  border-radius: 10px;
+  background-color: rgba(255,255,255,0.5);
 }
 @font-face {
     font-family:"bebas";
@@ -79,4 +96,9 @@ img {
   Display: inline-block;
   Padding: 5px;
   color:white;
+}
+button {
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 100px;
 }
