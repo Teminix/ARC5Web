@@ -15,6 +15,7 @@
     "url": "git+https://github.com/Teminix/ARC5Web.git"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "colors": "*",
     "express": "*",
     "express-session": "*",

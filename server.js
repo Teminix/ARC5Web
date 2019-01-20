@@ -12,7 +12,9 @@ const logger = require('./core/logger');
 const ROOT = "ground/";
 const session = require("express-session");
 const MongoClient = mongodb.MongoClient;
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer");
+const axios = require("axios");
+const et = require("./core/easy-temp.min");
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(logger);
 app.use(bodyParser.text());
@@ -21,7 +23,14 @@ app.use(session({
   resave:true,
   saveUninitialized:true
 }))
-
+app.use(function(req,res,next){
+  res.temp = function(path,data){
+    et.temp(path,(resp) => {
+      res.send(resp)
+    },data);
+  }
+  next()
+})
 app.use(bodyParser.json());
 app.use(function(req,res,next){
   res.giveFile = function(path){
@@ -42,12 +51,18 @@ const globals = {
 app.post("/",(req,res) => {
   res.send("Data you sent: "+req.body)
 })
+app.get("/temp",(req,res) => {
+  res.temp('ground/test.html',{gay:"Hmmm"})
+})
 app.get("/",(req,res) => {
-  res.send("Hello")
+  res.temp("Hello")
 })
-app.get("/login",(req,res) => {
-  res.giveFile("tests/login.html")
+app.get("/description",(req,res) => {
+  res.giveFile("ground/description.html")
 })
+// app.get("/login",(req,res) => {
+//   res.giveFile("ground/login.html")
+// })
 app.get("/*(.jpg|.js|.css|.woff|.jpeg|.ttf|.otf|.html)",(req,res) => {
   res.giveFile(ROOT+req.path);
   // l(dir+"/tests/"+req.path)
@@ -60,9 +75,9 @@ app.get("/preftemp",(req,res) => {
   res.send("null for now")
 })
 
-app.get("/test/changeusr",(req,res) => {
+app.get("/changeusr",(req,res) => {
   if (req.session.usr != undefined) {
-    res.redirect("/test/login")
+    res.redirect("/login")
   } else {
     let usr = req.session.usr;
     (async function(){
@@ -73,7 +88,7 @@ app.get("/test/changeusr",(req,res) => {
     })
   }
 })
-app.post("/test/changeusr",(req,res) => {
+app.post("/changeusr",(req,res) => {
 })
 app.post("/mail/send",(req,res) => {
   // res.send(decrypt('43df3c2c36944aa507d1ebc62571f095','god'))
@@ -101,27 +116,27 @@ transporter.sendMail(mailOptions, function(error, info){
   }
 });
 })
-app.get("/test/login",(req,res) => {
-  if (req.session.usr != undefined) {
-    redirect("/test/session")
+app.get("/login",(req,res) => {
+  if (req.session.email != undefined) {
+    redirect("/session")
   } else {
-    res.giveFile("tests/login.html")
+    res.giveFile("ground/login.html")
   }
-  res.giveFile("tests/login.html")
+  // res.giveFile("ground/login.html")
 })
 
-app.post("/test/login",(req,res) => {
-  let {usr,password} = req.body
-  if (usr == undefined || password == undefined) {
+app.post("/login",(req,res) => {
+  let {email,password} = req.body
+  if (email == undefined || password == undefined) {
     res.status(400).send("Invalid data format given")
   } else {
     (async function(){
       let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
       let collection = client.db("codefest").collection("users");
-      if (collection.countDocuments({username:usr,password:password}) == 0) {
+      if (collection.countDocuments({email:email,password:password}) == 0) {
         res.status(400).send("Username and password invalid")
       } else {
-        req.session.usr = usr;
+        req.session.email = email;
         req.session.password = password;
 
         res.send("Success");
@@ -136,25 +151,38 @@ app.post("/test/login",(req,res) => {
 
 
 ///////////////////////////////////////////
-app.get("/test/session",(req,res) => {
+app.get("/dashboard",(req,res) => {
   // res.type('json').send(req.session)
-  if (req.session.usr != undefined) {
-    res.type("html").send(`Here are your credentials: username: ${req.session.usr}; Display:${req.session.display}. <a href="logout">Logout here</a>`);
+  if (req.session.email != undefined) {
+    (async function(){
+      let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
+      let collection = client.db("codefest").collection("users");
+      let dict = {};
+      let list = await collection.findOne({email:req.session.email});
+      for(let key of list){
+        dict[key] = list[key]
+      }
+      res.temp("dashboard.html",dict);
+      client.close();
+    }()).catch(err=>{
+      res.status(500).send("Internal server error");
+      l(err);
+    })
   } else {
-    res.redirect("/test/login")
+    res.redirect("/login")
   }
 })
-app.get("/test/logout",(req,res) => {
+app.get("/logout",(req,res) => {
   delete req.session.usr;
   delete req.session.display;
-  res.redirect("/test/signup");
+  res.redirect("/signup");
 })
-app.post("/test/signup",(req,res) => {
+app.post("/signup",(req,res) => {
   // session testing:
-  let {usr, password, confirm_password} = req.body;
-  if(usr == undefined || password == undefined || confirm_password == undefined){
+  let {email, password, confirm_password} = req.body;
+  if(email == undefined || password == undefined || confirm_password == undefined){
     res.status(400).send("Invalid data format used");
-  } else if (usr.trim() == "" || password.trim() == "" || confirm_password.trim() == ""){
+  } else if (email.trim() == "" || password.trim() == "" || confirm_password.trim() == ""){
     res.status(400).send("Username, password and confirm password are compulsory")
   } else if (password != confirm_password) {
     res.status(400).send("Confirm password and password must be the same");
@@ -162,16 +190,19 @@ app.post("/test/signup",(req,res) => {
     (async function(){
       let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
       let collection = client.db("codefest").collection("users");
-      let criteria = {username:usr};
+      let criteria = {email:email};
       if (await collection.countDocuments(criteria) >= 1) {
         res.status(409).send("Username taken");
       } else {
         let doc = {
-          username:usr,
-          password:password
+          email:email,
+          password:password,
+          voltage:"",
+          current:"",
+          capacity:""
         }
         let confirm = await collection.insertOne(doc);
-        req.session.usr = usr;
+        req.session.email = email;
         res.send("Success");
       }
       client.close()
@@ -182,11 +213,11 @@ app.post("/test/signup",(req,res) => {
 
   }
 })
-app.get("/test/signup",(req,res) => {
+app.get("/signup",(req,res) => {
   if (req.session.usr != undefined) {
-    res.redirect("/test/session")
+    res.redirect("/dashboard")
   } else {
-    res.giveFile("tests/signup.html")
+    res.giveFile("ground/signup.html")
   }
 })
 app.get("/*",(req,res) => {

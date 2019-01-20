@@ -3,21 +3,49 @@
   <head>
     <meta charset="utf-8">
     <title>Dashboard</title>
-    <link rel = "stylesheet" type = "text/css" href = "style.css" />
+    <link rel="stylesheet" type="text/css" href="style.css"/>
   </head>
   <body>
     <div class="navbar">
       <div class="item">
-      <a href="login.html"> Login </a>
+      <a href="login.html">Login</a>
       </div>
       <div class="item">
-        <a href="signup.html"> Sign up </a>
-
+        <a href="signup.html">Sign up</a>
       </div>
-
     </div>
-    <center> <div class="heading" >
+
+    <center> <div class="heading">
         Dashboard
-    </div> </center>
+    </div>
+  </center>
+  <br /> <br /> <br /> <br />
+<center> <div class="subdivision">
+  Please enter the following details about your heater for the most accurate results.
+</div></center>
+<br /><br />
+
+
+<input class="input1" id="mobamba" type="text" name="" value="" placeholder="Heater Code"> <div class="addheater2">Add heater</div> <button type="button" name="button" class="addheater" style = "border-radius: 20px;"><a class = "addheater" href="dashboard.html">+</a></button>
+
+    <div class= "heaterview">
+  <div class="line2">Voltage:<input style = "width: 90px;" class = "input1" type="text" name="current" value="<(voltage)>" style = "font-size: 18px;" placeholder="Volts">  </div>
+  <br /><div class="line2">Current:<input style = "width: 90px;" class = "input1" type="text" name="" value="<(current)>" style = "font-size: 18px;" placeholder="Amperes">  </div>
+  <br /><div class="line2">Capacity:<input style = "width: 90px;" class = "input1" type="text" name="" value="<(capacity)>" placeholder="Liters">  </div>
+<br />  <div class="line2"> Desired temperature:<input style = "width: 90px;" class = "input1" type="text" name="" value="" placeholder="Celcius">
+<br />
+  <div class="line2"> <button class="hj" type="button" name="button">Fetch Temperature</button></div>
+  <div class="line2"> <button class="hj" type="button"> Calculate time</button>
+
+  </div>
+
+  </div>
+    </div>
+
+
+
+      <br />
+
+
   </body>
 </html>
