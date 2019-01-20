@@ -8,7 +8,6 @@
              
 
 
-
 const char* ssid = "codefest";
 const char* password = "OakCodefest@2019";
 
