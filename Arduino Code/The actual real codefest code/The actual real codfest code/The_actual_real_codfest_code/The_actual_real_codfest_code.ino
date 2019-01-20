@@ -15,6 +15,8 @@ const char* password = "OakCodefest@2019";
 #define dht_dpin 4  //digital pin 4 for data output of the Temperature sensor
 DHT dht (dht_dpin, DHTTYPE);
 
+              HTTPClient http;
+
 
 WiFiServer server(80);
 
@@ -57,49 +59,63 @@ String prepareHtmlPage()
   return htmlPage;
 }
 
+bool sendtimes = true;
 
 void loop()
 {
   WiFiClient client = server.available();
   // wait for a client (web browser) to connect
+
+ 
   if (client)
-  {
+  {     sendtimes != sendtimes;
+
     Serial.println("\n[Client connected]");
-    while (client.connected())
-    {
+    while (client.connected()){
       // read line by line what the client (web browser) is requesting
       if (client.available())
       {
         String line = client.readStringUntil('\r');
         Serial.print(line);
         // wait for end of client's request, that is marked with an empty line
-        if (line.length() >= 1 && line[0] == '\n')
-        {
-          client.println(prepareHtmlPage());
-          
+        
+          if(sendtimes == false){
               int floattemp = dht.readTemperature(); //temperature data output
               String temp = String(floattemp);
               
-              HTTPClient http;
               String url = "http://192.168.1.170:8001/stream";
               
               http.begin(url);
-          
+
+              for(int x = 21; x<41; x++){
+              
+              String truetemp = String(x);
               http.addHeader("Content-Type", "text/plain");// 
-              int httpCode = http.POST(temp); 
+              int httpCode = http.POST(truetemp); 
+              
               
               String payload = http.getString();
               Serial.println(httpCode);   
               Serial.println(payload);
-        
-              http.end();
+              delay(3000);
+              }
+          }
+             else{
+              
+             }
+             
+          }
+
+//                        client.println("gayman");
+
+              
         }
       }
-    }
+    
     delay(3500); // give the web browser time to receive the data
 
     // close the connection:
     
-    Serial.println("[Client disconnected]");
-  }
+    //Serial.println("[Client disconnected]");
+ 
 }
