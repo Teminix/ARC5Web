@@ -60,7 +60,13 @@ input:focus {
   border-width:2px;
 }
 
-
+.addheater2 {
+  background-color: white;
+  color:black;
+  font-size:25px;
+  font-family: arial;
+  display:inline-block;
+}
 
 
 .heading {
@@ -98,7 +104,15 @@ input:focus {
 #mobamba{
   margin-left: 150px;
   background-color: #00CCFF;
+  margin-right: 2px;
 }
+
+.addheater{
+  font-size: 35px;
+  margin:0px;
+  text-decoration: none;
+}
+
 .line1{
   font-size:18px;
   display:inline-block;
@@ -154,6 +168,12 @@ img {
   margin-left: 150px;
   background-color: rgba(255,255,255,0.99);
   height:inherit;
+}
+.addheater{
+  border:0;
+  border-radius: 0;
+  width: 40px;
+  height:40px;
 }
 .copy{
   background-color: white;
