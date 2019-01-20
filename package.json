@@ -15,10 +15,11 @@
     "url": "git+https://github.com/Teminix/ARC5Web.git"
   },
   "dependencies": {
+    "colors": "*",
     "express": "*",
     "express-session": "*",
     "mongodb": "*",
-    "colors": "*"
+    "nodemailer": "^5.1.1"
   },
   "keywords": [],
   "author": "",
