@@ -29,12 +29,45 @@
   </p></center>
   <br />
     <input type="text" name="email id" placeholder="Email ID"> <br />
-    <input type="password" name="password" placeholder="Password">
+    <input type="password" name="password" placeholder="Password"><br>
+    <span class="prompt"></span>
 <br /> <br />
-  <button type="button" name="button">Enter</button>
+  <button type="button" id="button">Enter</button>
 </div>
 <div class="copy">
   Copyright &copy; 2019 ARC 5
 </div>
+<script type="text/javascript">
+let button = document.getElementById("button");
+let form = document.getElementsByClassName("form")[0];
+form.querySelectorAll("[name]").forEach(e=>{
+  e.onkeypress = function(event){
+    if (event.keyCode == 13) {
+      button.onclick()
+    }
+  }
+  // l(e.onkeypress)
+})
+let prompt = document.getElementsByClassName("prompt")[0];
+button.onclick = function(){
+  let dict = getFormData(form);
+  l(dict)
+  $.ajax({
+      url:'/login',
+      type:"POST",
+      data: dict,
+      success:function(data){
+        prompt.style.color = "green";
+        prompt.innerHTML = data;
+        setTimeout(function(){
+          window.location.href = "/dashboard";
+        })
+      },
+      error:function(err){
+        prompt.style.color = 'red';
+        prompt.innerHTML = err.responseText;
+      }
+  })
+}
   </body>
 </html>

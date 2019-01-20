@@ -14,6 +14,7 @@ const session = require("express-session");
 const MongoClient = mongodb.MongoClient;
 const nodemailer = require("nodemailer");
 const axios = require("axios");
+const et = require("./core/easy-temp.min");
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(logger);
 app.use(bodyParser.text());
@@ -22,7 +23,14 @@ app.use(session({
   resave:true,
   saveUninitialized:true
 }))
-
+app.use(function(req,res,next){
+  res.temp = function(path,data){
+    et.temp(path,(resp) => {
+      res.send(resp)
+    },data);
+  }
+  next()
+})
 app.use(bodyParser.json());
 app.use(function(req,res,next){
   res.giveFile = function(path){
@@ -43,8 +51,11 @@ const globals = {
 app.post("/",(req,res) => {
   res.send("Data you sent: "+req.body)
 })
+app.get("/temp",(req,res) => {
+  res.temp('ground/test.html',{gay:"Hmmm"})
+})
 app.get("/",(req,res) => {
-  res.send("Hello")
+  res.temp("Hello")
 })
 app.get("/description",(req,res) => {
   res.giveFile("ground/description.html")
@@ -140,10 +151,10 @@ app.post("/login",(req,res) => {
 
 
 ///////////////////////////////////////////
-app.get("/session",(req,res) => {
+app.get("/dashboard",(req,res) => {
   // res.type('json').send(req.session)
   if (req.session.usr != undefined) {
-    res.type("html").send(`Here are your credentials: username: ${req.session.usr}; Display:${req.session.display}. <a href="logout">Logout here</a>`);
+    res.type("html").giveFile("ground/dashboard.html");
   } else {
     res.redirect("/login")
   }
@@ -155,10 +166,10 @@ app.get("/logout",(req,res) => {
 })
 app.post("/signup",(req,res) => {
   // session testing:
-  let {usr, password, confirm_password} = req.body;
-  if(usr == undefined || password == undefined || confirm_password == undefined){
+  let {email, password, confirm_password} = req.body;
+  if(email == undefined || password == undefined || confirm_password == undefined){
     res.status(400).send("Invalid data format used");
-  } else if (usr.trim() == "" || password.trim() == "" || confirm_password.trim() == ""){
+  } else if (email.trim() == "" || password.trim() == "" || confirm_password.trim() == ""){
     res.status(400).send("Username, password and confirm password are compulsory")
   } else if (password != confirm_password) {
     res.status(400).send("Confirm password and password must be the same");
@@ -166,16 +177,19 @@ app.post("/signup",(req,res) => {
     (async function(){
       let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
       let collection = client.db("codefest").collection("users");
-      let criteria = {username:usr};
+      let criteria = {email:email};
       if (await collection.countDocuments(criteria) >= 1) {
         res.status(409).send("Username taken");
       } else {
         let doc = {
-          username:usr,
-          password:password
+          email:email,
+          password:password,
+          voltage:"",
+          current:"",
+          capacity:""
         }
         let confirm = await collection.insertOne(doc);
-        req.session.usr = usr;
+        req.session.email = email;
         res.send("Success");
       }
       client.close()
@@ -188,7 +202,7 @@ app.post("/signup",(req,res) => {
 })
 app.get("/signup",(req,res) => {
   if (req.session.usr != undefined) {
-    res.redirect("/session")
+    res.redirect("/dashboard")
   } else {
     res.giveFile("ground/signup.html")
   }
