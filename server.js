@@ -117,7 +117,7 @@ transporter.sendMail(mailOptions, function(error, info){
 });
 })
 app.get("/login",(req,res) => {
-  if (req.session.usr != undefined) {
+  if (req.session.email != undefined) {
     redirect("/session")
   } else {
     res.giveFile("ground/login.html")
@@ -126,17 +126,17 @@ app.get("/login",(req,res) => {
 })
 
 app.post("/login",(req,res) => {
-  let {usr,password} = req.body
-  if (usr == undefined || password == undefined) {
+  let {email,password} = req.body
+  if (email == undefined || password == undefined) {
     res.status(400).send("Invalid data format given")
   } else {
     (async function(){
       let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
       let collection = client.db("codefest").collection("users");
-      if (collection.countDocuments({username:usr,password:password}) == 0) {
+      if (collection.countDocuments({email:email,password:password}) == 0) {
         res.status(400).send("Username and password invalid")
       } else {
-        req.session.usr = usr;
+        req.session.email = email;
         req.session.password = password;
 
         res.send("Success");
@@ -153,8 +153,21 @@ app.post("/login",(req,res) => {
 ///////////////////////////////////////////
 app.get("/dashboard",(req,res) => {
   // res.type('json').send(req.session)
-  if (req.session.usr != undefined) {
-    res.type("html").giveFile("ground/dashboard.html");
+  if (req.session.email != undefined) {
+    (async function(){
+      let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
+      let collection = client.db("codefest").collection("users");
+      let dict = {};
+      let list = await collection.findOne({email:req.session.email});
+      for(let key of list){
+        dict[key] = list[key]
+      }
+      res.temp("dashboard.html",dict);
+      client.close();
+    }()).catch(err=>{
+      res.status(500).send("Internal server error");
+      l(err);
+    })
   } else {
     res.redirect("/login")
   }
