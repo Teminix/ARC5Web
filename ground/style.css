@@ -169,7 +169,7 @@ button {
   margin-left: 100px;
   background: white;
   color:black;
-  transition: background 1s;
+  transition: background 1s, color 0.5s;
   border-radius: 3px;
   font-size: 30px;
   transform:translateX(79px);
