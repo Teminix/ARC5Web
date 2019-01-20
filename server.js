@@ -12,7 +12,8 @@ const logger = require('./core/logger');
 const ROOT = "ground/";
 const session = require("express-session");
 const MongoClient = mongodb.MongoClient;
-const nodemailer = require("nodemailer")
+const nodemailer = require("nodemailer");
+const axios = require("axios");
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(logger);
 app.use(bodyParser.text());
@@ -45,9 +46,12 @@ app.post("/",(req,res) => {
 app.get("/",(req,res) => {
   res.send("Hello")
 })
-app.get("/login",(req,res) => {
-  res.giveFile("tests/login.html")
+app.get("/description",(req,res) => {
+  res.giveFile("ground/description.html")
 })
+// app.get("/login",(req,res) => {
+//   res.giveFile("ground/login.html")
+// })
 app.get("/*(.jpg|.js|.css|.woff|.jpeg|.ttf|.otf|.html)",(req,res) => {
   res.giveFile(ROOT+req.path);
   // l(dir+"/tests/"+req.path)
@@ -60,9 +64,9 @@ app.get("/preftemp",(req,res) => {
   res.send("null for now")
 })
 
-app.get("/test/changeusr",(req,res) => {
+app.get("/changeusr",(req,res) => {
   if (req.session.usr != undefined) {
-    res.redirect("/test/login")
+    res.redirect("/login")
   } else {
     let usr = req.session.usr;
     (async function(){
@@ -73,7 +77,7 @@ app.get("/test/changeusr",(req,res) => {
     })
   }
 })
-app.post("/test/changeusr",(req,res) => {
+app.post("/changeusr",(req,res) => {
 })
 app.post("/mail/send",(req,res) => {
   // res.send(decrypt('43df3c2c36944aa507d1ebc62571f095','god'))
@@ -101,16 +105,16 @@ transporter.sendMail(mailOptions, function(error, info){
   }
 });
 })
-app.get("/test/login",(req,res) => {
+app.get("/login",(req,res) => {
   if (req.session.usr != undefined) {
-    redirect("/test/session")
+    redirect("/session")
   } else {
-    res.giveFile("tests/login.html")
+    res.giveFile("ground/login.html")
   }
-  res.giveFile("tests/login.html")
+  // res.giveFile("ground/login.html")
 })
 
-app.post("/test/login",(req,res) => {
+app.post("/login",(req,res) => {
   let {usr,password} = req.body
   if (usr == undefined || password == undefined) {
     res.status(400).send("Invalid data format given")
@@ -136,20 +140,20 @@ app.post("/test/login",(req,res) => {
 
 
 ///////////////////////////////////////////
-app.get("/test/session",(req,res) => {
+app.get("/session",(req,res) => {
   // res.type('json').send(req.session)
   if (req.session.usr != undefined) {
     res.type("html").send(`Here are your credentials: username: ${req.session.usr}; Display:${req.session.display}. <a href="logout">Logout here</a>`);
   } else {
-    res.redirect("/test/login")
+    res.redirect("/login")
   }
 })
-app.get("/test/logout",(req,res) => {
+app.get("/logout",(req,res) => {
   delete req.session.usr;
   delete req.session.display;
-  res.redirect("/test/signup");
+  res.redirect("/signup");
 })
-app.post("/test/signup",(req,res) => {
+app.post("/signup",(req,res) => {
   // session testing:
   let {usr, password, confirm_password} = req.body;
   if(usr == undefined || password == undefined || confirm_password == undefined){
@@ -182,11 +186,11 @@ app.post("/test/signup",(req,res) => {
 
   }
 })
-app.get("/test/signup",(req,res) => {
+app.get("/signup",(req,res) => {
   if (req.session.usr != undefined) {
-    res.redirect("/test/session")
+    res.redirect("/session")
   } else {
-    res.giveFile("tests/signup.html")
+    res.giveFile("ground/signup.html")
   }
 })
 app.get("/*",(req,res) => {

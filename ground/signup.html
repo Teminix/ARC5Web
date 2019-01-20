@@ -12,13 +12,13 @@
   <body>
     <div class="navbar">
       <div class="item">
-      <a href="login.html"> Login </a>
+      <a href="login"> Login </a>
       </div>
       <div class="item">
-        <a href="index.html"> Home </a>
+        <a href="index"> Home </a>
       </div>
 <div class="item">
-  <a href="description.html">About Us</a>
+  <a href="description">About Us</a>
 </div>
     </div>
     <br /><br />
@@ -31,19 +31,50 @@
   </p></center>
   <br />
   <div class="form">
-    <input type="text" name="email id" placeholder="Email ID"> <br />
-  <input type="text" name="email id" placeholder="Re-Enter Email ID">
+    <input type="text" name="email" placeholder="Email ID"> <br />
     <input type="password" name="password" placeholder="Password">
-    <input type="password" name="password" placeholder="Re Enter Password">
+    <input type="password" name="confirm_password" placeholder="Re Enter Password"><br>
+    <span class="prompt"></span><br>
+    <button type="button" id="button">Sign in</button>
   </div>
   <br /> <br />
-  <button type="button" name="button">Enter</button>
+  <!-- <button type="button" name="button">Enter</button> -->
   </div>
   <div class="copy">
     Copyright &copy; 2019 ARC 5
   </div>
   <script type="text/javascript">
-
+  let button = document.getElementById("button");
+  let form = document.getElementsByClassName("form")[0];
+  form.querySelectorAll("[name]").forEach(e=>{
+    e.onkeypress = function(event){
+      if (event.keyCode == 13) {
+        button.onclick()
+      }
+    }
+    // l(e.onkeypress)
+  })
+  let prompt = document.getElementsByClassName("prompt")[0];
+  button.onclick = function(){
+    let dict = getFormData(form);
+    l(dict)
+    $.ajax({
+        url:'/test/signup',
+        type:"POST",
+        data: dict,
+        success:function(data){
+          prompt.style.color = "green";
+          prompt.innerHTML = data;
+          setTimeout(function(){
+            window.location.href = "/test/session";
+          })
+        },
+        error:function(err){
+          prompt.style.color = 'red';
+          prompt.innerHTML = err.responseText;
+        }
+    })
+  }
   </script>
   </body>
 </html>
