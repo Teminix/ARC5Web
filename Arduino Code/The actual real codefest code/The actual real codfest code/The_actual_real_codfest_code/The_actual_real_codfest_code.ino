@@ -59,7 +59,7 @@ String prepareHtmlPage()
   return htmlPage;
 }
 
-bool sendtimes = true;
+bool sendtimes = 0;
 
 void loop()
 {
@@ -68,8 +68,8 @@ void loop()
 
  
   if (client)
-  {     sendtimes != sendtimes;
-
+  {    
+    sendtimes++;
     Serial.println("\n[Client connected]");
     while (client.connected()){
       // read line by line what the client (web browser) is requesting
@@ -79,7 +79,7 @@ void loop()
         Serial.print(line);
         // wait for end of client's request, that is marked with an empty line
         
-          if(sendtimes == false){
+          if(sendtimes%2 == 1){
               int floattemp = dht.readTemperature(); //temperature data output
               String temp = String(floattemp);
               
@@ -89,17 +89,18 @@ void loop()
 
               for(int x = 21; x<41; x++){
               
-              String truetemp = String(x);
-              http.addHeader("Content-Type", "text/plain");// 
-              int httpCode = http.POST(truetemp); 
+                String truetemp = String(x);
+                http.addHeader("Content-Type", "text/plain");// 
+                int httpCode = http.POST(truetemp); 
               
               
-              String payload = http.getString();
-              Serial.println(httpCode);   
-              Serial.println(payload);
-              delay(3000);
+                String payload = http.getString();
+                Serial.println(httpCode); 
+                String payloadshow = String("payload" + payload);  
+                Serial.println(payloadshow);
+                delay(3000);
               }
-          }
+             }
              else{
               
              }
