@@ -5,6 +5,9 @@
 #include <ESP8266HTTPClient.h>
 #include <DHT.h>
 
+             
+
+
 
 const char* ssid = "codefest";
 const char* password = "OakCodefest@2019";
@@ -74,22 +77,22 @@ void loop()
         if (line.length() >= 1 && line[0] == '\n')
         {
           client.println(prepareHtmlPage());
-          break;
+          
               int floattemp = dht.readTemperature(); //temperature data output
               String temp = String(floattemp);
-
-              String url = "http://192.168.1.170:8001/stream";
-    
+              
               HTTPClient http;
+              String url = "http://192.168.1.170:8001/stream";
+              
               http.begin(url);
           
-              http.addHeader("Content-Type", "text/plain");// wkihfilu, preferred temperature reached
-              int httpCode = http.POST("dicks are gay"); 
+              http.addHeader("Content-Type", "text/plain");// 
+              int httpCode = http.POST(temp); 
               
               String payload = http.getString();
               Serial.println(httpCode);   
               Serial.println(payload);
-          
+        
               http.end();
         }
       }
