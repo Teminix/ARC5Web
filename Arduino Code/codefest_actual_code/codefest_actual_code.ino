@@ -4,6 +4,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+//#include <WiFi.h>
 
 
 #define DHTTYPE DHT11
@@ -26,8 +27,6 @@ String page = "";
 String text = ""; 
 String data = "";
 
-int LDRontime = 0;
-int DHTontime = 0;
 
 
 void setup() {
@@ -55,18 +54,17 @@ void setup() {
 
 
    server.on("/", [](){
-
-    server.send(200, "text/html", "Data you sent: " + server.arg("preferredtemp"));
-   
+    server.send(200, "text/html", "Hello, World!");
+    Serial.println("Nigga nigga nigga");
    /* text = (String)data;
    server.send(200, "text/html", text);*/
  });   
+
+    
      
 }
 
 void loop(void){ //there is a void inside of the loop 
-
-    server.print
     
     float floattemp = dht.readTemperature(); //temperature data output
 
@@ -74,13 +72,14 @@ void loop(void){ //there is a void inside of the loop
 
     WiFiClient client = server.available();   // listen for incoming clients
       if (client) {
-        Serial.print("we've got a nigga");   
-      }
+        Serial.println("we've got a client");
+        Serial.println(client.read());  
+      } */
 
       
-    /*if(WiFi.status() == WL_CONNECTED){
+    if(WiFi.status() == WL_CONNECTED){
 
-  String url = "http://192.168.1.170:8001/mail/send";
+  String url = "http://192.168.1.170:8001/";
     
     HTTPClient http;
     http.begin(url);
@@ -98,7 +97,7 @@ void loop(void){ //there is a void inside of the loop
 
     else{
       Serial.print("Error in Wifi connection");
-    }*/
+    }
 
     delay(5000);
 
