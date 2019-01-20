@@ -14,6 +14,7 @@ const session = require("express-session");
 const MongoClient = mongodb.MongoClient;
 const nodemailer = require("nodemailer");
 let preftemp = 40;
+let latest_value = 0;
 const axios = require("axios");
 const et = require("./core/easy-temp.min");
 const arduinoURL = "http://192.168.1.69";
@@ -134,7 +135,7 @@ app.get("/login",(req,res) => {
 app.post("/stream",(req,res) => {
   if (typeof preftemp == "undefined") {
     (async function(){
-      let {email} = req.session
+      let {email} = req.session;
       let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
       let collection = client.db("codefest").collection("users");
       let preftemp = await collection.find({email:email});
@@ -147,14 +148,17 @@ app.post("/stream",(req,res) => {
       axios.get(arduinoURL)
       .then(response=>{}).catch((err)=>{
         throw err;
-      })
-      l(`req.body == 24`+(preftemp == req.body))
+      });
     }
+    l(`req.body == 24`+(preftemp == req.body))
   }
   l(req.body);
   res.send("Okay");
 })
 app.get("/testGet",(req,res) => {
+
+})
+app.get("/fetch",(req,res) => {
 
 })
 app.post("/login",(req,res) => {
