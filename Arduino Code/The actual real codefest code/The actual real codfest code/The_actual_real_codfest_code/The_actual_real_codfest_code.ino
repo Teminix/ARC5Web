@@ -99,22 +99,26 @@ void loop()
                 String payloadshow = String("payload" + payload);  
                 Serial.println(payloadshow);
                 delay(3000);
+                    http.end();
+
               }
              }
-             else{
-              
+             if (sendtimes%2 == 0){
+                client.stop();
+                    http.end();
+                
+
              }
              
-          }
-
-//                        client.println("gayman");
-
+      }
               
         }
       }
     
     delay(3500); // give the web browser time to receive the data
-
+    
+    client.stop();
+    http.end();
     // close the connection:
     
     //Serial.println("[Client disconnected]");
