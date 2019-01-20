@@ -1,6 +1,6 @@
 body {
-  background-image: url("https://www.fcsolar.com.au/wp-content/uploads/2017/10/what-is-renewable-energy.jpg");
   background-size:100%;
+  background-color: rgb(20,20,20);
   background-repeat:no-repeat;
   background-attachment: fixed
 }
@@ -30,19 +30,20 @@ body {
 }
 
 .item a:hover {
-  color: white;
-  background: black;
+  color: red;
+  background: yellow;
   padding: 20px;
   display: black;
   transition-delay:0.5s;
   transition:0.5s;
 }
 input {
-  color: #696968;
-  background: black;
+  color: #black;
+  background: white;
   font-size: 30px;
   margin-left: 17px;
-  padding:20px
+  padding:20px;
+  margin-bottom: 20px
 }
 input:focus {
   color: black;
@@ -63,18 +64,18 @@ input:focus {
 
 
 .heading {
-  background-color:black;
+  background-color:white;
   display:inline-block;
   font-family:"bebas";
   font-size:100px;
-  color:yellow;
+  color:black;
   padding:10px;
   animation-name: details;
   animation-duration: 1.5s;
 }
 .subdivision {
-  background: black;
-  color: yellow;
+  background: white;
+  color: black;
   padding: 10 px;
   font-size: 30px;
   font-family:bebas;
@@ -122,8 +123,8 @@ input:focus {
   padding:8px;
   cursor:pointer;
   border:0;
-  background-color: yellow;
-  color: black;
+  background-color: black;
+  color: white;
   font-size: 18px;
 }
 
@@ -153,19 +154,19 @@ img {
   height:inherit;
 }
 .copy{
-  background-color: black;
+  background-color: white;
   font-size: 12.5;
   font-family:helvetica;
   Display: inline-block;
   Padding: 5px;
-  color:white;
+  color:black;
 }
 button {
   font-size: 20px;
   cursor: pointer;
   margin-left: 100px;
-  background: black;
-  color:white;
+  background: white;
+  color:black;
   transition: background 1s;
   border-radius: 3px;
   font-size: 30px;
@@ -175,9 +176,10 @@ button {
   animation-duration: 1.5s;
   border:0;
 }
+
 button:hover{
-  background:white;
-  color: black;
+  background:yellow;
+  color: red;
 }
 @keyframes details{
   from{opacity:0}
