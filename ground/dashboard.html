@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>Dashboard</title>
     <link rel="stylesheet" type="text/css" href="style.css"/>
+    <script src="/js/jquery.js" charset="utf-8"></script>
+    <script src="/js/script.js" charset="utf-8"></script>
   </head>
   <body>
     <div class="navbar">
@@ -28,17 +30,51 @@
 <input class="input1" id="mobamba" type="text" placeholder="Heater Code">
 
     <div class= "heaterview">
-  <div class="line2">Voltage:<input style = "width: 90px;" class = "input1" type="text" name="current" value="<(voltage)>" style = "font-size: 18px;" placeholder="Volts">  </div>
-  <br /><div class="line2">Current:<input style = "width: 90px;" class = "input1" type="text" name="" value="<(current)>" style = "font-size: 18px;" placeholder="Amperes">  </div>
-  <br /><div class="line2">Capacity:<input style = "width: 90px;" class = "input1" type="text" name="" value="<(capacity)>" placeholder="Liters">  </div>
-<br />  <div class="line2"> Desired temperature:<input style = "width: 90px;" class = "input1" type="text" name="" value="" placeholder="Celcius">
-<br />
-  <div class="line2"> <button class="hj" type="button" name="button">Fetch Temperature</button></div>
-  <div class="line2"> <button class="hj" type="button"> Calculate time</button>
+      <div class="form">
+        <div class="line2">Voltage:<input style = "width: 90px;" class = "input1" type="text" name="voltage" value="<(voltage)>" style = "font-size: 18px;" placeholder="Volts">  </div>
+        <br /><div class="line2">Current:<input style = "width: 90px;" class = "input1" type="text" name="current" value="<(current)>" style = "font-size: 18px;" placeholder="Amperes">  </div>
+        <br /><div class="line2">Capacity:<input style = "width: 90px;" class = "input1" type="text" name="capacity" value="<(capacity)>" placeholder="Liters">  </div>
+      <br />  <div class="line2"> Desired temperature:<input style = "width: 90px;" class = "input1" type="text" name="celsius" value="<(celsius)>" placeholder="Celsius"></div><br />
+      Recommendations:<br>
+      <span style="background-color:blue;color:white">Cold-Cool: 10-15 degrees</span>
+      <span style="background-color:red;color:white">Warm-Hot: 32-40 degrees</span>
+      <br />
+        <div class="line2"> <button class="hj" type="button" id="fetch">Fetch Temperature</button></div>
+        <div class="line2"> <button class="hj" type="button" id="calculate"> Calculate time</button>
+        </div>
+      </div>
+      <script type="text/javascript">
+      let dict = {}
+        document.querySelectorAll(".hj").forEach(e=>{
+          e.onclick = function(){
+            document.querySelectorAll(".form [name]").forEach(e=>{
+              dict[e.name] = e.value;
+            })
+            console.log(dict);
+            $.ajax({
+              url:"/update",
+              type:'POST',
+              data:dict,
+              success:(data) => {
+                l(data)
+              },
+              error:function(err){
+                l(err);
+              }
+            });
+            if(this.id == "fetch"){
+            } else if(this.id == "calculate") {
+              let voltage = document.getElementsByName("voltage")[0].value;
+              let current = document.getElementsByName("current")[0].value;
+              let capacity = document.getElementsByName("capacity")[0].value;
+              let celsius = document.getElementsByName("celsius")[0].value;
+              // let Time = capacity*4.18*(celsius-initial)/(voltage*current);*/
+            }
+          }
+        })
+      </script>
 
-  </div>
 
-  </div>
     </div>
 
 

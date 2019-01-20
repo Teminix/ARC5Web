@@ -13,8 +13,10 @@ const ROOT = "ground/";
 const session = require("express-session");
 const MongoClient = mongodb.MongoClient;
 const nodemailer = require("nodemailer");
+let preftemp = 40;
 const axios = require("axios");
 const et = require("./core/easy-temp.min");
+const arduinoURL = "http://192.168.1.69";
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(logger);
 app.use(bodyParser.text());
@@ -48,6 +50,11 @@ const globals = {
   port:8001,
   mongoPort:8000
 };
+axios.get("http://0.0.0.0:8001").then(response=>{
+  l(response.data)
+}).catch(e=>{
+  throw e
+})
 app.post("/",(req,res) => {
   res.send("Data you sent: "+req.body)
 })
@@ -55,7 +62,7 @@ app.get("/temp",(req,res) => {
   res.temp('ground/test.html',{gay:"Hmmm"})
 })
 app.get("/",(req,res) => {
-  res.temp("Hello")
+  res.giveFile("ground/index.html")
 })
 app.get("/description",(req,res) => {
   res.giveFile("ground/description.html")
@@ -118,13 +125,38 @@ transporter.sendMail(mailOptions, function(error, info){
 })
 app.get("/login",(req,res) => {
   if (req.session.email != undefined) {
-    redirect("/session")
+    redirect("/dashboard")
   } else {
     res.giveFile("ground/login.html")
   }
   // res.giveFile("ground/login.html")
 })
+app.post("/stream",(req,res) => {
+  if (typeof preftemp == "undefined") {
+    (async function(){
+      let {email} = req.session
+      let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
+      let collection = client.db("codefest").collection("users");
+      let preftemp = await collection.find({email:email});
+    }()).catch(err=>{
+      res.status(500).send("Internal server")
+      l(err)
+    })
+  } else {
+    if(preftemp >= req.body-1.2 || preftemp <= req.body+1.2){
+      axios.get(arduinoURL)
+      .then(response=>{}).catch((err)=>{
+        throw err;
+      })
+      l(`req.body == 24`+(preftemp == req.body))
+    }
+  }
+  l(req.body);
+  res.send("Okay");
+})
+app.get("/testGet",(req,res) => {
 
+})
 app.post("/login",(req,res) => {
   let {email,password} = req.body
   if (email == undefined || password == undefined) {
@@ -133,12 +165,10 @@ app.post("/login",(req,res) => {
     (async function(){
       let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
       let collection = client.db("codefest").collection("users");
-      if (collection.countDocuments({email:email,password:password}) == 0) {
+      if (await collection.countDocuments({email:email,password:password}) == 0) {
         res.status(400).send("Username and password invalid")
       } else {
         req.session.email = email;
-        req.session.password = password;
-
         res.send("Success");
       }
     }()).catch(err=>{
@@ -151,18 +181,48 @@ app.post("/login",(req,res) => {
 
 
 ///////////////////////////////////////////
-app.get("/dashboard",(req,res) => {
-  // res.type('json').send(req.session)
-  if (req.session.email != undefined) {
+app.post("/update",(req,res) => {
+  if(req.session.email != undefined){
+    let { email } = req.session;
     (async function(){
       let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
       let collection = client.db("codefest").collection("users");
       let dict = {};
-      let list = await collection.findOne({email:req.session.email});
-      for(let key of list){
-        dict[key] = list[key]
+      let confirm = await collection.update({email:email},{$set:req.body});
+      res.send("Updated")
+      // res.temp("ground/dashboard.html",dict);
+      // res.send(JSON.stringify(dict));
+      res.send("OK")
+      client.close();
+    }()).catch(err=>{
+      res.status(500).send("Internal server error");
+      l(err);
+    })
+  }
+  else {
+    res.status(400).send("Invalid")
+  }
+})
+app.get("/dashboard",(req,res) => {
+  // res.type('json').send(req.session)
+  if (req.session.email != undefined) {
+    // res.send(req.session.email);
+    (async function(){
+      let client = await MongoClient.connect("mongodb://localhost:"+globals.mongoPort);
+      let collection = client.db("codefest").collection("users");
+      let dict = {};
+      if (await collection.countDocuments({email:req.session.email}) == 0) {
+        res.redirect("/signup")
+      } else {
+        let list = await collection.findOne({email:req.session.email});
+        for(let key in list){
+          dict[key] = list[key]
+        }
+        res.temp("ground/dashboard.html",dict);
       }
-      res.temp("dashboard.html",dict);
+
+      // res.send(JSON.stringify(dict));
+
       client.close();
     }()).catch(err=>{
       res.status(500).send("Internal server error");
@@ -172,6 +232,9 @@ app.get("/dashboard",(req,res) => {
     res.redirect("/login")
   }
 })
+
+
+
 app.get("/logout",(req,res) => {
   delete req.session.usr;
   delete req.session.display;
@@ -199,7 +262,8 @@ app.post("/signup",(req,res) => {
           password:password,
           voltage:"",
           current:"",
-          capacity:""
+          capacity:"",
+          celsius:""
         }
         let confirm = await collection.insertOne(doc);
         req.session.email = email;

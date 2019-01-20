@@ -28,11 +28,15 @@
     Please enter your details to login.
   </p></center>
   <br />
-    <input type="text" name="email id" placeholder="Email ID"> <br />
+  <div class="form">
+    <input type="text" name="email" placeholder="Email ID"> <br />
     <input type="password" name="password" placeholder="Password"><br>
-    <span class="prompt"></span>
+    <span class="prompt"></span><br />
+    <button type="button" id="button">Enter</button>
+  </div>
+
 <br /> <br />
-  <button type="button" id="button">Enter</button>
+
 </div>
 <div class="copy">
   Copyright &copy; 2019 ARC 5
@@ -43,7 +47,8 @@ let form = document.getElementsByClassName("form")[0];
 form.querySelectorAll("[name]").forEach(e=>{
   e.onkeypress = function(event){
     if (event.keyCode == 13) {
-      button.onclick()
+      button.onclick();
+      l("test")
     }
   }
   // l(e.onkeypress)
@@ -59,9 +64,7 @@ button.onclick = function(){
       success:function(data){
         prompt.style.color = "green";
         prompt.innerHTML = data;
-        setTimeout(function(){
           window.location.href = "/dashboard";
-        })
       },
       error:function(err){
         prompt.style.color = 'red';
@@ -69,5 +72,6 @@ button.onclick = function(){
       }
   })
 }
+</script>
   </body>
 </html>
