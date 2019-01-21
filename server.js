@@ -132,6 +132,7 @@ app.get("/login",(req,res) => {
   }
   // res.giveFile("ground/login.html")
 })
+let allow = true;
 app.post("/stream",(req,res) => {
   if (typeof preftemp == "undefined") {
     (async function(){
@@ -144,15 +145,20 @@ app.post("/stream",(req,res) => {
       l(err)
     })
   } else {
+    if (allow == true) {
+      axios.get(arduinoURL);
+    }
     if(preftemp >= req.body-1.2 || preftemp <= req.body+1.2){
       axios.get(arduinoURL)
       .then(response=>{}).catch((err)=>{
         throw err;
       });
+      
     }
     l(`req.body == 24`+(preftemp == req.body))
   }
   l(req.body);
+
   res.send("Okay");
 })
 app.get("/testGet",(req,res) => {
